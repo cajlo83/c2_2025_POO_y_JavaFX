@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
+
 package c2_2025_clase21_guardarpersona;
 
 import javafx.application.Application;
@@ -16,15 +13,23 @@ import javafx.stage.Stage;
  */
 public class C2_2025_clase21_GuardarPersona extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("GuardarPersonaFX.fxml"));
-        Scene scene = new Scene(root);
-        primaryStage.setTitle("guardar Persona");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
     
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("GuardarPersonaFX.fxml"));
+        Parent root = loader.load();
+
+        //  Obtener el controller
+        GuardarPersonaController controller = loader.getController();
+
+        //  Llamar cargarPersona
+        controller.iniciar();
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
     
     public static void main(String[] args) {
         launch(args);

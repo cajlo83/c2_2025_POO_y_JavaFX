@@ -4,7 +4,9 @@
  */
 package c2_2025_clase21_guardarpersona;
 
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -16,6 +18,8 @@ import javafx.stage.Stage;
  * @author Usuario
  */
 public class GuardarPersonaController {
+
+    private static boolean iniciado = false;
 
     @FXML
     private TextField txtNombre;
@@ -44,19 +48,59 @@ public class GuardarPersonaController {
     private void aceptar() {
         if (!validar()) {
             lblEstado.setText("Datos inválidos");
-            return;
+        } else {
+            Persona p = new Persona(txtNombre.getText(), txtApellido.getText(), Integer.parseInt(txtDNI.getText()), obtenerGenero());
+
+            guardarPersona(p);
+
+            System.out.println("se guardo: " + p.toString());
+            lblEstado.setText("se guardo: " + p.toString());
+
         }
 
-        Persona persona = new Persona(
-                txtNombre.getText(),
-                txtApellido.getText(),
-                Integer.parseInt(txtDNI.getText()),
-                obtenerGenero()
-        );
-        System.out.println(persona);
-        lblEstado.setText("Guardado correctamente");
     }
 
+    //verifica si esta el archivo creado
+    public void iniciar() {
+        if (!iniciado) {
+            // Si existe el archivo, cargarlo
+            File archivo = new File("persona.dat");
+
+            if (archivo.exists()) {
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo));
+                    Persona persona = (Persona) ois.readObject();
+                    ois.close();
+
+                    // Precargar datos
+                    txtNombre.setText(persona.getNombre());
+                    txtApellido.setText(persona.getApellido());
+                    txtDNI.setText(String.valueOf(persona.getDNI()));
+
+                    if (persona.getGenero().equals("Masculino")) {
+                        rbMasculino.setSelected(true);
+                    } else if (persona.getGenero().equals("Femenino")) {
+                        rbFemenino.setSelected(true);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            iniciado = true;
+        }
+    }
+
+    private void guardarPersona(Persona p) {
+
+        try {
+            ArchivoPersona.guardar(p);
+            System.out.println("Persona guardada.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private String obtenerGenero() {
         String retorno;
